@@ -2,4 +2,5 @@
 
 ## Setup
 
-git clone git@github.com:wamorkart/aQGC_Pheno.git
+1. Clone the repository:
+```git clone git@github.com:wamorkart/aQGC_Pheno.git```
