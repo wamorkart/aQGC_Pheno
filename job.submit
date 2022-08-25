@@ -1,0 +1,30 @@
+#!/bin/bash
+sbatch <<EOT
+#!/bin/bash
+#SBATCH --job-name=serial_job_test    # Job name
+#SBATCH --mail-type=END,FAIL          # Mail events (NONE, BEGIN, END, FAIL, ALL)
+#SBATCH --mail-user=twamorkar@anl.gov     # Where to send mail	
+#SBATCH --ntasks=1                    # Run on a single CPU
+#SBATCH --mem=8gb                     # Job memory request
+#SBATCH --output=serial_test_%j.log   # Standard output and error log
+#SBATCH -p hepd
+#SBATCH -A condo
+#SBATCH -w hepd-0001 
+#SBATCH --time=96:00:00
+
+pwd; hostname; date
+
+
+MG5_aMC_v3_4_0/bin/mg5_aMC oswwjj_hadronic/mg_script_oswwjj_S0.txt  
+# mv oswwjj_hadronic/ /lcrc/group/ATLAS/aQGC_Pheno/
+# MG5_aMC_v3_4_0/bin/mg5_aMC sswwjj_hadronic/mg_script_sswwjj_S0.txt 
+# MG5_aMC_v3_4_0/bin/mg5_aMC www_hadronic/mg_script_www_S0.txt  
+# MG5_aMC_v3_4_0/bin/mg5_aMC wwz_hadronic/mg_script_wwz_S0.txt 
+# MG5_aMC_v3_4_0/bin/mg5_aMC wzjj_hadronic/mg_script_wzjj_S0.txt 
+# MG5_aMC_v3_4_0/bin/mg5_aMC wzz_hadronic/mg_script_wzz_S0.txt 
+# MG5_aMC_v3_4_0/bin/mg5_aMC zzjj_hadronic/mg_script_zzjj_S0.txt 
+# MG5_aMC_v3_4_0/bin/mg5_aMC zzz_hadronic/mg_script_zzz_S0.txt 
+
+date
+
+EOT
