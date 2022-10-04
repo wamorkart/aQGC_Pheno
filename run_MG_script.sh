@@ -10,11 +10,11 @@ if [ $inclusive == 0 ]
 then
     fileExt="hadronic"
 fi
-# process="sswwjj oswwjj wzjj zzjj www wwz wzz zzz";
-process="sswwjj";
+process="sswwjj oswwjj wzjj zzjj www wwz wzz zzz";
+# process="sswwjj";
 
-# EFT_param="1e-20 1e-12 1e-11 1e-10 2e-10 3e-10 4e-10 1e-9 5e-9 1e-8"
-EFT_param="1e-11"
+EFT_param="1e-20 1e-12 1e-11 1e-10 1e-9 5e-9 1e-8"
+# EFT_param="1e-11"
 echo $inclusive
 for p in $process;
 # for process in wzz;

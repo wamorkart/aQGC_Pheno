@@ -29,7 +29,7 @@ if __name__ == "__main__":
             {} (LO)
 #########################################
 
-
+import SM_Ltotal_Ind5v2020v2_UFO
 define p = g u c d s u~ c~ d~ s~ b b~
 define j = p
 define z1 = z
@@ -38,7 +38,7 @@ define z2 = z
         model = ""
         generate_lines = ""
         if (args.EFT_param=="S0"):
-            model = "import SM_LS012"
+            model = "import SM_Ltotal_Ind5v2020v2_UFO"
         if (args.process=="www"):
             if (args.inclusive=="1"):
                 generate_lines = """generate p p > w+ w+ w- QCD=0
@@ -134,7 +134,7 @@ set anoinputs 21 1.000000e-20  #FT9
 ### run_card.dat:
 
 set run_tag {}_aQGC_F{}_1e-20_events
-set nevents 50000
+set nevents 20000
 set bwcutoff 15.0
 set ptb 20.0
 set etab 5.0
