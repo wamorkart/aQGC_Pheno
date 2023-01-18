@@ -6,25 +6,26 @@ import os
 import sys
 
 
-
+param_numbers = {"S0":1, "S1":2, "S2":3, "M0":4, "M1":5, "M2":6, "M3":7, "M4":8, "M5":9, "M6":10, "M7":11, "T0":12, "T1":13, "T2":14, "T3":15, "T4":16, "T5":17, "T6":18, "T7":19, "T8":20, "T9":21}
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Produce a MadGraph script for scanning EFT parameter over the specified values for different processes.")
     parser.add_argument("process", type=str, action="store", help="The process to generate.")
     parser.add_argument("EFT_param", type=str, action="store", help="The EFT parameter to scan.")  
     parser.add_argument("inclusive",type=str,action="store",help="check if the process to be generated is inclusive or not")  
     parser.add_argument("scan_values", type=float, action="store", help="Values to scan.")
-    parser.add_argument("out_dir",type=str,action="store",help="output dir name")
+    # parser.add_argument("out_dir",type=str,action="store",help="output dir name")
 
     args = parser.parse_args()
-
-    out_dir = args.out_dir if args.out_dir else "."
+    
+    out_dir = args.process + "_" + args.EFT_param + "_" + str(args.scan_values)
+    # out_dir = args.out_dir if args.out_dir else "."
     try:
         os.makedirs(out_dir)
     except FileExistsError:
         pass
     print ("inclusive: ", args.inclusive)
     # with open(out_dir+"/mg_script_{}_{}.txt".format(args.process, args.EFT_param), "w") as f:
-    with open(out_dir+"/mg_script_{}_{}.txt".format(args.process, args.EFT_param), "w") as f:
+    with open(out_dir+"/mg_script_{}_{}_{}.txt".format(args.process, args.EFT_param, args.scan_values), "w") as f:
         f.write("""#########################################
             {} (LO)
 #########################################
@@ -102,39 +103,30 @@ launch {}_aQGC_L{}
 # analysis=MADANALYSIS_5
 # madspin=OFF
 # reweight=OFF
-done
+done""".format(model, generate_lines, out_dir, args.EFT_param, out_dir, args.EFT_param))
+
+        f.write("""
 #——————————————————————————————————————
 ## Set Run card and Param card values:
 #——————————————————————————————————————
 
 ### param_card.dat:
+""")
+        for param in param_numbers:
+            if (param != args.EFT_param):
+                f.write("""
+set anoinputs {} 1e-20 #{}
+    """.format(param_numbers[param], param))
+            else:
+               f.write("""
+set anoinputs {} {} #{}
+    """.format(param_numbers[param], args.scan_values,param) )
 
-set anoinputs 1 {}  #FS0
-set anoinputs 2 {}  #FS1
-set anoinputs 3 {}  #FS2
-set anoinputs 4 {}  #FM0
-set anoinputs 5 {}  #FM1
-set anoinputs 6 {}  #FM2
-set anoinputs 7 {}  #FM3
-set anoinputs 8 {}  #FM4
-set anoinputs 9 {}  #FM5
-set anoinputs 10 {}  #FM6
-set anoinputs 11 {}  #FM7
-set anoinputs 12 {}  #FT0
-set anoinputs 13 {}  #FT1
-set anoinputs 14 {}  #FT2
-set anoinputs 15 {}  #FT3
-set anoinputs 16 {}  #FT4
-set anoinputs 17 {}  #FT5
-set anoinputs 18 {}  #FT6
-set anoinputs 19 {}  #FT7
-set anoinputs 20 {}  #FT8
-set anoinputs 21 {}  #FT9
-
+        f.write("""
 ### run_card.dat:
 
-set run_tag {}_aQGC_F{}_{}_events
-set nevents 1000
+set run_tag {}_aQGC_{}_{}_events
+set nevents 100000
 set bwcutoff 15.0
 set ptb 20.0
 set etab 5.0
@@ -142,25 +134,17 @@ set drbb 0.4
 set drbj 0.4
 set maxjetflavor 5
 set iseed 0
-#set event_norm sum
 
-done""".format(model, generate_lines, args.out_dir, args.EFT_param, args.out_dir, args.EFT_param, args.scan_values, args.scan_values, args.scan_values, args.scan_values, args.scan_values, args.scan_values, args.scan_values, args.scan_values, args.scan_values, args.scan_values, args.scan_values, args.scan_values, args.scan_values, args.scan_values, args.scan_values, args.scan_values, args.scan_values, args.scan_values, args.scan_values, args.scan_values, args.scan_values, args.out_dir, args.EFT_param, args.scan_values))
-# ## Loop over scan values
-#         f.write("""
-# #########################################
-# ## Run through coupling parameters \n""")
-#         for scan_value in args.scan_values:
-#             f.write("""launch {}_aQGC_L{}
-# done
-# set run_tag {}_aQGC_F{}_{}
-# set anoinputs 1 {}  #FS0
-# done \n""".format(args.out_dir, args.EFT_param, args.out_dir, args.EFT_param, scan_value, scan_value))
+done
 
-        f.write("""launch {}_aQGC_L{} -i 
-print_results --path=./cross_section_{}_aQGC_L{}.txt --format=short
+launch {}_aQGC_{}_{}_events -i
+print_results --path={}/cross_section_{}_aQGC_{}_{}.txt --format=short
+
 exit
 
-exit""".format(args.out_dir, args.EFT_param, args.out_dir, args.EFT_param))
+        """.format(args.process, args.EFT_param, args.scan_values, args.process, args.EFT_param, args.scan_values, out_dir, args.process, args.EFT_param, args.scan_values))
+
+
 
 
        
