@@ -13,11 +13,13 @@ if __name__ == "__main__":
     parser.add_argument("EFT_param", type=str, action="store", help="The EFT parameter to scan.")  
     parser.add_argument("inclusive",type=str,action="store",help="check if the process to be generated is inclusive or not")  
     parser.add_argument("scan_values", type=float, action="store", help="Values to scan.")
+    parser.add_argument("nevents", type=float, action="store", help="number of events to generate")
+
     # parser.add_argument("out_dir",type=str,action="store",help="output dir name")
 
     args = parser.parse_args()
     
-    out_dir = args.process + "_" + args.EFT_param + "_" + str(args.scan_values)
+    out_dir = args.process + "_" + args.EFT_param + "_" + str(args.scan_values) +"_" + str(args.inclusive)
     # out_dir = args.out_dir if args.out_dir else "."
     try:
         os.makedirs(out_dir)
@@ -27,7 +29,7 @@ if __name__ == "__main__":
     # with open(out_dir+"/mg_script_{}_{}.txt".format(args.process, args.EFT_param), "w") as f:
     with open(out_dir+"/mg_script_{}_{}_{}.txt".format(args.process, args.EFT_param, args.scan_values), "w") as f:
         f.write("""#########################################
-            {} (LO)
+            
 #########################################
 
 import SM_Ltotal_Ind5v2020v2_UFO
@@ -35,7 +37,7 @@ define p = g u c d s u~ c~ d~ s~ b b~
 define j = p
 define z1 = z
 define z2 = z
-""".format(args.EFT_param))
+""")
         model = ""
         generate_lines = ""
         # if (args.EFT_param=="S0"):
@@ -52,8 +54,8 @@ add process p p > w- w- w+ QCD=0, w- > l- vl~, w+ > j j"""
                 generate_lines = """generate p p > w+ w- z """
             else:    
                 generate_lines  = """generate p p > w+ w- z, w+ > l+ vl, w- > l-  vl~, z > j j 
-add process p p > w+ w- z, w+ > l+ vl, w- > j j, z > l l
-add process p p > w+ w- z, w+ > j j, w- > l-, vl~, z > l l"""
+add process p p > w+ w- z, w+ > l+ vl, w- > j j, z > l+ l-
+add process p p > w+ w- z, w+ > j j, w- > l-, vl~, z > l+ l-"""
         elif (args.process=="sswwjj"):
             if (args.inclusive=="1"):
                 generate_lines = """generate p p > w+ w+ j j QCD=0
@@ -78,7 +80,7 @@ add process p p > w- z j j QCD=0, w- > l- vl~, z > l+ l-"""
                 generate_lines = """generate p p > z z j j QCD=0"""
             else:    
                 generate_lines = """generate p p > z z j j QCD=0, z > l+ l-
-generate p p > z1 z2 j j QCD=0, z1 > l l, z2 > j j"""    
+generate p p > z1 z2 j j QCD=0, z1 > l+ l-, z2 > j j"""    
         elif (args.process=="wzz"):
             if (args.inclusive=="1"):
                 generate_lines = """generate p p > w+ z z QCD=0
@@ -95,15 +97,15 @@ add process p p > w- z1 z2 QCD=0, w- > l- vl~, z1 > l+ l-, z2 > j j"""
 
 {}
 
-output {}_aQGC_L{}
-launch {}_aQGC_L{}
+output {}
+launch {}
 
 # shower=PYTHIA8
 # detector=PGS
 # analysis=MADANALYSIS_5
 # madspin=OFF
 # reweight=OFF
-done""".format(model, generate_lines, out_dir, args.EFT_param, out_dir, args.EFT_param))
+done""".format(model, generate_lines, out_dir, out_dir))
 
         f.write("""
 #——————————————————————————————————————
@@ -125,8 +127,8 @@ set anoinputs {} {} #{}
         f.write("""
 ### run_card.dat:
 
-set run_tag {}_aQGC_{}_{}_events
-set nevents 100000
+set run_tag {}_{}_{}
+set nevents {}
 set bwcutoff 15.0
 set ptb 20.0
 set etab 5.0
@@ -137,12 +139,13 @@ set iseed 0
 
 done
 
-launch {}_aQGC_{}_{}_events -i
-print_results --path={}/cross_section_{}_aQGC_{}_{}.txt --format=short
+
+launch {}_{}_{}_{}  -i
+print_results --path=cross_section_{}_{}_{}_{}.txt --format=short 
 
 exit
 
-        """.format(args.process, args.EFT_param, args.scan_values, args.process, args.EFT_param, args.scan_values, out_dir, args.process, args.EFT_param, args.scan_values))
+        """.format(args.process, args.EFT_param, args.scan_values, args.nevents, args.process, args.EFT_param, args.scan_values, args.inclusive, args.process, args.EFT_param, args.scan_values, args.inclusive  ))
 
 
 
