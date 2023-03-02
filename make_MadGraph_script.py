@@ -12,14 +12,14 @@ if __name__ == "__main__":
     parser.add_argument("process", type=str, action="store", help="The process to generate.")
     parser.add_argument("EFT_param", type=str, action="store", help="The EFT parameter to scan.")  
     parser.add_argument("inclusive",type=str,action="store",help="check if the process to be generated is inclusive or not")  
-    parser.add_argument("scan_values", type=float, action="store", help="Values to scan.")
+    parser.add_argument("scan_values", type=float, nargs = "+", action="store", help="Values to scan.")
     parser.add_argument("nevents", type=float, action="store", help="number of events to generate")
 
     # parser.add_argument("out_dir",type=str,action="store",help="output dir name")
 
     args = parser.parse_args()
-    
-    out_dir = args.process + "_" + args.EFT_param + "_" + str(args.scan_values) +"_" + str(args.inclusive)
+    print (args.EFT_param, param_numbers[args.EFT_param])
+    out_dir = args.process + "_aQGC_" + args.EFT_param +"_" + str(args.inclusive)
     # out_dir = args.out_dir if args.out_dir else "."
     try:
         os.makedirs(out_dir)
@@ -27,12 +27,12 @@ if __name__ == "__main__":
         pass
     print ("inclusive: ", args.inclusive)
     # with open(out_dir+"/mg_script_{}_{}.txt".format(args.process, args.EFT_param), "w") as f:
-    with open(out_dir+"/mg_script_{}_{}_{}.txt".format(args.process, args.EFT_param, args.scan_values), "w") as f:
+    with open(out_dir+"/mg_script_{}_{}.txt".format(args.process, args.EFT_param), "w") as f:
         f.write("""#########################################
             
 #########################################
 
-import SM_Ltotal_Ind5v2020v2_UFO
+import model SM_Ltotal_Ind5v2020v2_UFO
 define p = g u c d s u~ c~ d~ s~ b b~
 define j = p
 define z1 = z
@@ -97,15 +97,15 @@ add process p p > w- z1 z2 QCD=0, w- > l- vl~, z1 > l+ l-, z2 > j j"""
 
 {}
 
-output {}
-launch {}
+output /lcrc/project/aqgc/twamorkar/aqgc_pheno/{}_aQGC_{}
+launch /lcrc/project/aqgc/twamorkar/aqgc_pheno/{}_aQGC_{}
 
 # shower=PYTHIA8
 # detector=PGS
 # analysis=MADANALYSIS_5
 # madspin=OFF
 # reweight=OFF
-done""".format(model, generate_lines, out_dir, out_dir))
+done""".format(model, generate_lines, args.process, args.EFT_param, args.process, args.EFT_param ))
 
         f.write("""
 #——————————————————————————————————————
@@ -115,19 +115,22 @@ done""".format(model, generate_lines, out_dir, out_dir))
 ### param_card.dat:
 """)
         for param in param_numbers:
-            if (param != args.EFT_param):
-                f.write("""
+            f.write("""
 set anoinputs {} 1e-20 #{}
     """.format(param_numbers[param], param))
-            else:
-               f.write("""
-set anoinputs {} {} #{}
-    """.format(param_numbers[param], args.scan_values,param) )
+            # if (param != args.EFT_param):
+                # f.write("""
+# set anoinputs {} 1e-20 #{}
+    # """.format(param_numbers[param], param))
+            # else:
+            #    f.write("""
+# set anoinputs {} {} #{}
+    # """.format(param_numbers[param], args.scan_values,param) )
 
         f.write("""
 ### run_card.dat:
 
-set run_tag {}_{}_{}
+set run_tag {}_aQGC_{}_1e-20
 set nevents {}
 set bwcutoff 15.0
 set ptb 20.0
@@ -139,13 +142,41 @@ set iseed 0
 
 done
 
+#########################################
+## Run through coupling parameters
 
-launch {}_{}_{}_{}  -i
-print_results --path=cross_section_{}_{}_{}_{}.txt --format=short 
 
-exit
+""".format(args.process, args.EFT_param, args.nevents))
 
-        """.format(args.process, args.EFT_param, args.scan_values, args.nevents, args.process, args.EFT_param, args.scan_values, args.inclusive, args.process, args.EFT_param, args.scan_values, args.inclusive  ))
+        for v in args.scan_values:
+            f.write("""
+#{}={}
+launch /lcrc/project/aqgc/twamorkar/aqgc_pheno/{}_aQGC_{}
+done
+set run_tag {}_aQGC_{}_{}
+set anoinputs {} {} #{}
+done
+            
+            
+            """.format(args.EFT_param, v, args.process, args.EFT_param, args.process, args.EFT_param, v, param_numbers[args.EFT_param], v, args.EFT_param))
+        f.write("""
+launch /lcrc/project/aqgc/twamorkar/aqgc_pheno/{}_aQCG_{}  -i
+print_results --path=/lcrc/project/aqgc/twamorkar/aqgc_pheno/cross_section_{}_aQGC_{}.txt --format=short 
+
+        """.format(args.process, args.EFT_param, args.process, args.EFT_param))
+# launch /lcrc/project/aqgc/twamorkar/aqgc_pheno/{}  
+# done
+# set run_tag {}_aQGC_{}_{}
+# set anoinputs {} {} #{}
+# done
+
+# launch /lcrc/project/aqgc/twamorkar/aqgc_pheno/{}  -i
+
+# print_results --path=/lcrc/project/aqgc/twamorkar/aqgc_pheno/cross_section_{}_aQGC_{}.txt --format=short 
+
+# exit
+
+#         """.format(args.process, args.EFT_param, args.scan_values, args.nevents, args.process, args.EFT_param, args.scan_values, args.inclusive, args.process, args.EFT_param, args.scan_values, args.inclusive  ))
 
 
 
