@@ -19,3 +19,6 @@ In this analysis, we are interested in exploring VBS and Tri-Boson process. They
 - wwz
 - wzz
 - zzz
+1. The first step is calculating the SM cross-section for the above listed processes. This is done using the ```make_MadGraph_SM_script.py```. Some MadGraph reference can be found [here](https://arxiv.org/pdf/1405.0301.pdf).
+   - How to run: ```python make_MadGraph_SM_script.py <process> <inclusive> <nevents> ```
+   - Eg: To generate the process p p > z z z QCD=0 with 10k events you should do ```python make_MadGraph_SM_script.py zzz 1 10000 ```
