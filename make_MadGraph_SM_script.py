@@ -6,7 +6,6 @@ import os
 import sys
 
 
-param_numbers = {"S0":1, "S1":2, "S2":3, "M0":4, "M1":5, "M2":6, "M3":7, "M4":8, "M5":9, "M6":10, "M7":11, "T0":12, "T1":13, "T2":14, "T3":15, "T4":16, "T5":17, "T6":18, "T7":19, "T8":20, "T9":21}
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Produce a MadGraph script for scanning EFT parameter over the specified values for different processes.")
     parser.add_argument("process", type=str, action="store", help="The process to generate.")
@@ -17,7 +16,7 @@ if __name__ == "__main__":
 
     args = parser.parse_args()
 
-    print (args.inclusive)
+    # print (args.inclusive)
     out_dir = args.process + "_loopSM_" + str(args.inclusive)
     # out_dir = args.out_dir if args.out_dir else "."
     try:
