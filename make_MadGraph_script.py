@@ -14,11 +14,16 @@ if __name__ == "__main__":
     parser.add_argument("inclusive",type=str,action="store",help="check if the process to be generated is inclusive or not")  
     parser.add_argument("scan_values", type=float, nargs = "+", action="store", help="Values to scan.")
     parser.add_argument("nevents", type=float, action="store", help="number of events to generate")
+    parser.add_argument("model", type=str, action="store", help="model")
+    parser.add_argument("ext", type=str, action="store", help="extension")
+
 
     # parser.add_argument("out_dir",type=str,action="store",help="output dir name")
 
     args = parser.parse_args()
+
     print (args.EFT_param, param_numbers[args.EFT_param])
+    print (args.inclusive)
     out_dir = args.process + "_aQGC_" + args.EFT_param +"_" + str(args.inclusive)
     # out_dir = args.out_dir if args.out_dir else "."
     try:
@@ -27,43 +32,61 @@ if __name__ == "__main__":
         pass
     print ("inclusive: ", args.inclusive)
     # with open(out_dir+"/mg_script_{}_{}.txt".format(args.process, args.EFT_param), "w") as f:
-    with open(out_dir+"/mg_script_{}_{}.txt".format(args.process, args.EFT_param), "w") as f:
+    with open(out_dir+"/mg_script_{}_{}_{}.txt".format(args.process, args.EFT_param, args.model), "w") as f:
         f.write("""#########################################
             
 #########################################
 
-import model SM_Ltotal_Ind5v2020v2_UFO
+import model {}
 define p = g u c d s u~ c~ d~ s~ b b~
 define j = p
 define z1 = z
 define z2 = z
-""")
+""".format(args.model))
         model = ""
         generate_lines = ""
-        # if (args.EFT_param=="S0"):
-        #     model = "import SM_Ltotal_Ind5v2020v2_UFO"
+        maxjetflavor = 5
+        
+
         if (args.process=="www"):
+            maxjetflavor = 4
             if (args.inclusive=="1"):
                 generate_lines = """generate p p > w+ w+ w- QCD=0
 add process p p > w- w- w+ QCD=0"""
+                 
             else:    
                 generate_lines = """generate p p > w+ w+ w- QCD=0, w+ > l+ vl, w- > j j
 add process p p > w- w- w+ QCD=0, w- > l- vl~, w+ > j j"""   
         elif (args.process=="wwz"):
+            maxjetflavor = 4
             if (args.inclusive=="1"):
-                generate_lines = """generate p p > w+ w- z """
+                generate_lines = """generate p p > w+ w- z QCD=0"""
             else:    
-                generate_lines  = """generate p p > w+ w- z, w+ > l+ vl, w- > l-  vl~, z > j j 
+                generate_lines  = """generate p p > w+ w- z QCD=0, w+ > l+ vl, w- > l-  vl~, z > j j 
 add process p p > w+ w- z, w+ > l+ vl, w- > j j, z > l+ l-
 add process p p > w+ w- z, w+ > j j, w- > l-, vl~, z > l+ l-"""
-        elif (args.process=="sswwjj"):
+        elif (args.process=="sswwjj_inclusive"):
+            maxjetflavor = 4
             if (args.inclusive=="1"):
                 generate_lines = """generate p p > w+ w+ j j QCD=0
 add process p p > w- w- j j QCD=0"""
             else:    
                 generate_lines = """generate p p > w+ w+ j j QCD=0, w+ > l+ vl
 add process p p > w- w- j j QCD=0, w- > l- vl~"""
+        elif (args.process=="sswwjj_wp"):
+            maxjetflavor = 4
+            if (args.inclusive=="1"):
+                generate_lines = """generate p p > w+ w+ j j QCD=0"""
+            else:    
+                generate_lines = """generate p p > w+ w+ j j QCD=0, w+ > l+ vl"""
+        elif (args.process=="sswwjj_wm"):
+            maxjetflavor = 4
+            if (args.inclusive=="1"):
+                generate_lines = """generate p p > w- w- j j QCD=0"""
+            else:    
+                generate_lines = """add process p p > w- w- j j QCD=0, w- > l- vl~"""                
         elif (args.process=="oswwjj"):
+            maxjetflavor = 4
             if (args.inclusive=="1"):
                 generate_lines = """generate p p > w+ w- j j QCD=0"""
             else:    
@@ -97,15 +120,15 @@ add process p p > w- z1 z2 QCD=0, w- > l- vl~, z1 > l+ l-, z2 > j j"""
 
 {}
 
-output /lcrc/project/aqgc/twamorkar/aqgc_pheno/{}_aQGC_{}
-launch /lcrc/project/aqgc/twamorkar/aqgc_pheno/{}_aQGC_{}
+output /lcrc/project/aqgc/twamorkar/aqgc_pheno/{}_aQGC_{}_{}_{}
+launch /lcrc/project/aqgc/twamorkar/aqgc_pheno/{}_aQGC_{}_{}_{}
 
 # shower=PYTHIA8
 # detector=PGS
 # analysis=MADANALYSIS_5
 # madspin=OFF
 # reweight=OFF
-done""".format(model, generate_lines, args.process, args.EFT_param, args.process, args.EFT_param ))
+done""".format(model, generate_lines, args.process, args.EFT_param, args.model, args.ext, args.process, args.EFT_param, args.model, args.ext ))
 
         f.write("""
 #——————————————————————————————————————
@@ -118,14 +141,7 @@ done""".format(model, generate_lines, args.process, args.EFT_param, args.process
             f.write("""
 set anoinputs {} 1e-20 #{}
     """.format(param_numbers[param], param))
-            # if (param != args.EFT_param):
-                # f.write("""
-# set anoinputs {} 1e-20 #{}
-    # """.format(param_numbers[param], param))
-            # else:
-            #    f.write("""
-# set anoinputs {} {} #{}
-    # """.format(param_numbers[param], args.scan_values,param) )
+
 
         f.write("""
 ### run_card.dat:
@@ -137,7 +153,10 @@ set ptb 20.0
 set etab 5.0
 set drbb 0.4
 set drbj 0.4
-set maxjetflavor 5
+""".format(args.process, args.EFT_param, args.nevents))
+
+        f.write("""
+set maxjetflavor {}
 set iseed 0
 
 done
@@ -146,39 +165,24 @@ done
 ## Run through coupling parameters
 
 
-""".format(args.process, args.EFT_param, args.nevents))
+""".format(maxjetflavor))
 
         for v in args.scan_values:
             f.write("""
 #{}={}
-launch /lcrc/project/aqgc/twamorkar/aqgc_pheno/{}_aQGC_{}
+launch /lcrc/project/aqgc/twamorkar/aqgc_pheno/{}_aQGC_{}_{}_{}
 done
 set run_tag {}_aQGC_{}_{}
 set anoinputs {} {} #{}
 done
             
             
-            """.format(args.EFT_param, v, args.process, args.EFT_param, args.process, args.EFT_param, v, param_numbers[args.EFT_param], v, args.EFT_param))
+            """.format(args.EFT_param, v, args.process, args.EFT_param, args.model, args.ext, args.process, args.EFT_param, v, param_numbers[args.EFT_param], v, args.EFT_param))
         f.write("""
-launch /lcrc/project/aqgc/twamorkar/aqgc_pheno/{}_aQCG_{}  -i
-print_results --path=/lcrc/project/aqgc/twamorkar/aqgc_pheno/cross_section_{}_aQGC_{}.txt --format=short 
+launch /lcrc/project/aqgc/twamorkar/aqgc_pheno/{}_aQGC_{}_{}_{}  -i
+print_results --path=/lcrc/project/aqgc/twamorkar/aqgc_pheno/cross_section_{}_aQGC_{}_{}_{}.txt --format=short 
 
-        """.format(args.process, args.EFT_param, args.process, args.EFT_param))
-# launch /lcrc/project/aqgc/twamorkar/aqgc_pheno/{}  
-# done
-# set run_tag {}_aQGC_{}_{}
-# set anoinputs {} {} #{}
-# done
-
-# launch /lcrc/project/aqgc/twamorkar/aqgc_pheno/{}  -i
-
-# print_results --path=/lcrc/project/aqgc/twamorkar/aqgc_pheno/cross_section_{}_aQGC_{}.txt --format=short 
-
-# exit
-
-#         """.format(args.process, args.EFT_param, args.scan_values, args.nevents, args.process, args.EFT_param, args.scan_values, args.inclusive, args.process, args.EFT_param, args.scan_values, args.inclusive  ))
-
-
+        """.format(args.process, args.EFT_param, args.model, args.ext, args.process, args.EFT_param, args.model, args.ext))
 
 
        

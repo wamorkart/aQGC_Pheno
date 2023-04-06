@@ -11,7 +11,7 @@ then
     fileExt="hadronic"
 fi
 
-process="sswwjj_inclusive oswwjj wzjj zzjj www wwz wzz zzz"
+process="sswwjj_inclusive oswwjj wzjj zzjj www wwz wzz zzz sswwjj_wp sswwjj_wm"
 
 nevents="10000"
 echo $inclusive

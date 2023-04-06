@@ -44,70 +44,74 @@ define z2 = z
             maxjetflavor = 4
             if (args.inclusive=="1"):
                 generate_lines = """generate p p > w+ w+ w- QCD=0
-add process p p > w- w- w+ QCD=0"""
+add process p p > w- w- w+  QCD=0"""
                  
             else:    
-                generate_lines = """generate p p > w+ w+ w- QCD=0, w+ > l+ vl, w- > j j
-add process p p > w- w- w+ QCD=0, w- > l- vl~, w+ > j j"""   
+                generate_lines = """generate p p > w+ w+ w- , w+ > l+ vl, w- > j j
+add process p p > w- w- w+  , w- > l- vl~, w+ > j j"""   
         elif (args.process=="wwz"):
             maxjetflavor = 4
             if (args.inclusive=="1"):
-                generate_lines = """generate p p > w+ w- z QCD=0"""
+                generate_lines = """generate p p > w+ w- z  QCD=0"""
             else:    
-                generate_lines  = """generate p p > w+ w- z QCD=0, w+ > l+ vl, w- > l-  vl~, z > j j 
+                generate_lines  = """generate p p > w+ w- z  , w+ > l+ vl, w- > l-  vl~, z > j j 
 add process p p > w+ w- z, w+ > l+ vl, w- > j j, z > l+ l-
 add process p p > w+ w- z, w+ > j j, w- > l-, vl~, z > l+ l-"""
         elif (args.process=="sswwjj_inclusive"):
-            maxjetflavor = 4
+            maxjetflavor = 5
             if (args.inclusive=="1"):
-                generate_lines = """generate p p > w+ w+ j j QCD=0
-add process p p > w- w- j j QCD=0"""
+                generate_lines = """generate p p > w+ w+ j j  QCD=0
+add process p p > w- w- j j  QCD=0"""
             else:    
-                generate_lines = """generate p p > w+ w+ j j QCD=0, w+ > l+ vl
-add process p p > w- w- j j QCD=0, w- > l- vl~"""
+                generate_lines = """generate p p > w+ w+ j j  , w+ > l+ vl
+add process p p > w- w- j j  , w- > l- vl~"""
         elif (args.process=="sswwjj_wp"):
-            maxjetflavor = 4
+            maxjetflavor = 5
             if (args.inclusive=="1"):
-                generate_lines = """generate p p > w+ w+ j j QCD=0"""
+                generate_lines = """generate p p > w+ w+ j j QCD=0 """
             else:    
-                generate_lines = """generate p p > w+ w+ j j QCD=0, w+ > l+ vl"""
+                generate_lines = """generate p p > w+ w+ j j  , w+ > l+ vl"""
         elif (args.process=="sswwjj_wm"):
-            maxjetflavor = 4
+            maxjetflavor = 5
             if (args.inclusive=="1"):
-                generate_lines = """generate p p > w- w- j j QCD=0"""
+                generate_lines = """generate p p > w- w- j j QCD=0  """
             else:    
-                generate_lines = """add process p p > w- w- j j QCD=0, w- > l- vl~"""                
+                generate_lines = """add process p p > w- w- j j  , w- > l- vl~"""                
         elif (args.process=="oswwjj"):
             maxjetflavor = 4
             if (args.inclusive=="1"):
-                generate_lines = """generate p p > w+ w- j j QCD=0"""
+                generate_lines = """generate p p > w+ w- j j QCD=0 """
             else:    
-                generate_lines = """generate p p > w+ w- j j QCD=0, w+ > l+ vl, w- > l- vl~"""
+                generate_lines = """generate p p > w+ w- j j  , w+ > l+ vl, w- > l- vl~"""
         elif (args.process=="wzjj"):
+            maxjetflavor = 5
             if (args.inclusive=="1"):
-                generate_lines = """generate p p > w+ z j j QCD=0
-add process p p > w- z j j QCD=0"""
+                generate_lines = """generate p p > w+ z j j  QCD=0
+add process p p > w- z j j  QCD=0"""
             else:    
-                generate_lines = """generate p p > w+ z j j QCD=0, w+ > l+ vl, z > l+ l- 
-add process p p > w- z j j QCD=0, w- > l- vl~, z > l+ l-"""
+                generate_lines = """generate p p > w+ z j j  , w+ > l+ vl, z > l+ l- 
+add process p p > w- z j j  , w- > l- vl~, z > l+ l-"""
         elif (args.process=="zzjj"):
+            maxjetflavor = 5
             if (args.inclusive=="1"):
-                generate_lines = """generate p p > z z j j QCD=0"""
+                generate_lines = """generate p p > z z j j  QCD=0"""
             else:    
-                generate_lines = """generate p p > z z j j QCD=0, z > l+ l-
-generate p p > z1 z2 j j QCD=0, z1 > l+ l-, z2 > j j"""    
+                generate_lines = """generate p p > z z j j  , z > l+ l-
+generate p p > z1 z2 j j  , z1 > l+ l-, z2 > j j"""    
         elif (args.process=="wzz"):
+            maxjetflavor = 5
             if (args.inclusive=="1"):
-                generate_lines = """generate p p > w+ z z QCD=0
-add process p p > w- z z QCD=0"""
+                generate_lines = """generate p p > w+ z z  QCD=0
+add process p p > w- z z  QCD=0"""
             else:
-                generate_lines = """generate p p > w+ z1 z2 QCD=0, w+ > l+ vl, z1 > l+ l-, z2 > j j
-add process p p > w- z1 z2 QCD=0, w- > l- vl~, z1 > l+ l-, z2 > j j"""    
+                generate_lines = """generate p p > w+ z1 z2  , w+ > l+ vl, z1 > l+ l-, z2 > j j
+add process p p > w- z1 z2  , w- > l- vl~, z1 > l+ l-, z2 > j j"""    
         elif (args.process=="zzz"):
+            maxjetflavor = 5
             if (args.inclusive=="1"):
-                generate_lines = """generate p p > z z z QCD=0"""
+                generate_lines = """generate p p > z z z  QCD=0"""
             else:
-                generate_lines = """generate p p > z1 z1 z2 QCD=0, z1 > l+ l-, z2 > j j """                
+                generate_lines = """generate p p > z1 z1 z2  , z1 > l+ l-, z2 > j j """                
         f.write("""
 
 {}
