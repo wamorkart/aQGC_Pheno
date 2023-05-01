@@ -1,0 +1,53 @@
+#!/bin/bash
+#SBATCH --job-name=aqgc_pheno   # Job name
+#SBATCH --output=aqgc_pheno_%j.log   # Standard output and error log
+#SBATCH -p bdwall
+#SBATCH -A ATLAS-HEP-GROUP
+#SBATCH --exclusive
+#SBATCH --time=48:00:00                 # Wall time limit hrs:min:sec
+#SBATCH --array=1-25
+#SBATCH --mail-user=twamorkar@anl.gov  # Where to send mail
+#SBATCH -N 1
+#SBATCH -c 36
+process="zzz www wwz wzz"
+# process="wwz"
+operators="T0 T1 T2 T5 T6 T7"
+for p in $process;
+do
+        for o in $operators;
+        do
+                srun --exclusive -N 1 -n 1 /home/twamorkar/MG5_aMC_v3_4_2/bin/mg5_aMC ${p}_aQGC_${o}_1/mg_script_${p}_${o}_SM_Ltotal_Ind5v2020v2_UFO.txt &
+        done
+done
+##1e-10 1e-09 1e-08 1e-07
+# for process in "sswwjj oswwjj wzjj zzjj wwz wzz zzz";
+# do  
+#     for val in 1e-12 1e-11 1e-10 1e-09 1e-08 1e-07 ;
+#     do
+#         srun --exclusive -N 1 -n 1 ../WWW_aQGC/wwy-aqgc/MG5_aMC_v2_9_9/bin/mg5_aMC ${process}_${val}_1/mg_script_${process}_S0_${val}.txt 
+#     done
+# done
+
+# srun --exclusive -N 1 -n 1 ../WWW_aQGC/wwy-aqgc/MG5_aMC_v2_9_9/bin/mg5_aMC sswwjj_S0_1e-07_1/mg_script_sswwjj_S0_1e-07.txt &
+# srun --exclusive -N 1 -n 1 ../WWW_aQGC/wwy-aqgc/MG5_aMC_v2_9_9/bin/mg5_aMC sswwjj_S0_1e-07_1/mg_script_sswwjj_S0_1e-07.txt &
+# srun --exclusive -N 1 -n 1 ../WWW_aQGC/wwy-aqgc/MG5_aMC_v2_9_9/bin/mg5_aMC sswwjj_S0_1e-08_1/mg_script_sswwjj_S0_1e-08.txt &
+# srun --exclusive -N 1 -n 1 ../WWW_aQGC/wwy-aqgc/MG5_aMC_v2_9_9/bin/mg5_aMC sswwjj_S0_1e-09_1/mg_script_sswwjj_S0_1e-09.txt &
+# srun --exclusive -N 1 -n 1 ../WWW_aQGC/wwy-aqgc/MG5_aMC_v2_9_9/bin/mg5_aMC sswwjj_S0_1e-10_1/mg_script_sswwjj_S0_1e-10.txt &
+# srun --exclusive -N 1 -n 1 ../WWW_aQGC/wwy-aqgc/MG5_aMC_v2_9_9/bin/mg5_aMC sswwjj_S0_1e-11_1/mg_script_sswwjj_S0_1e-11.txt &
+# srun --exclusive -N 1 -n 1 ../WWW_aQGC/wwy-aqgc/MG5_aMC_v2_9_9/bin/mg5_aMC sswwjj_S0_1e-12_1/mg_script_sswwjj_S0_1e-12.txt &
+# srun --exclusive -N 1 -n 1 ../WWW_aQGC/wwy-aqgc/MG5_aMC_v2_9_9/bin/mg5_aMC sswwjj_S0_1e-20_1/mg_script_sswwjj_S0_1e-20.txt &
+
+# srun --exclusive -N 1 -n 1 ../WWW_aQGC/wwy-aqgc/MG5_aMC_v2_9_9/bin/mg5_aMC sswwjj_S0_2e-11_1/mg_script_sswwjj_S0_2e-11.txt &
+# srun --exclusive -N 1 -n 1 ../WWW_aQGC/wwy-aqgc/MG5_aMC_v2_9_9/bin/mg5_aMC sswwjj_S0_4e-11_1/mg_script_sswwjj_S0_4e-11.txt &
+# srun --exclusive -N 1 -n 1 ../WWW_aQGC/wwy-aqgc/MG5_aMC_v2_9_9/bin/mg5_aMC sswwjj_S0_6e-11_1/mg_script_sswwjj_S0_6e-11.txt &
+# srun --exclusive -N 1 -n 1 ../WWW_aQGC/wwy-aqgc/MG5_aMC_v2_9_9/bin/mg5_aMC sswwjj_S0_8e-11_1/mg_script_sswwjj_S0_8e-11.txt &
+
+# srun --exclusive -N 1 -n 1 /home/twamorkar/MG5_aMC_v3_4_2/bin/mg5_aMC oswwjj_aQGC_S0_1/mg_script_oswwjj_S0_SM_Ltotal_Ind5v2020v2_UFO.txt &
+# srun --exclusive -N 1 -n 1 /home/twamorkar/MG5_aMC_v3_4_2/bin/mg5_aMC wzjj_aQGC_S0_1/mg_script_wzjj_S0_SM_Ltotal_Ind5v2020v2_UFO.txt &
+# srun --exclusive -N 1 -n 1 /home/twamorkar/MG5_aMC_v3_4_2/bin/mg5_aMC zzjj_aQGC_S0_1/mg_script_zzjj_S0_SM_Ltotal_Ind5v2020v2_UFO.txt &
+
+
+wait
+
+
+

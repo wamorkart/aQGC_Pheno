@@ -2,14 +2,14 @@
 #SBATCH --job-name=aqgc_pheno   # Job name
 #SBATCH --output=aqgc_pheno_%j.log   # Standard output and error log
 #SBATCH -p bdwall
-#SBATCH -N 1 
-#SBATCH -c 36
 #SBATCH -A ATLAS-HEP-GROUP
 #SBATCH --exclusive
 #SBATCH --time=48:00:00                 # Wall time limit hrs:min:sec
+#SBATCH -N 1 
+#SBATCH -c 36
 #SBATCH --array=1-8
-
-
+#SBATCH --mail-user=twamorkar@anl.gov  # Where to send mail
+#SBATCH --mail-type=ALL                 # Mail events (NONE, BEGIN, END, FAIL, ALL)
 
 #SBATCH --mail-user=twamorkar@anl.gov  # Where to send mail
 
@@ -31,6 +31,9 @@
 #     done
 # done
 
+srun --exclusive -N 1 -n 1 /home/twamorkar/MG5_aMC_v3_4_2/bin/mg5_aMC sswwjj_inclusive_loopSM_1/mg_script_sswwjj_inclusive_loop_sm.txt $SLURM_ARRAY_TASK_ID &
+
+
 # srun --exclusive -N 1 -n 1 ../WWW_aQGC/wwy-aqgc/MG5_aMC_v2_9_9/bin/mg5_aMC sswwjj_S0_1e-07_1/mg_script_sswwjj_S0_1e-07.txt &
 # srun --exclusive -N 1 -n 1 ../WWW_aQGC/wwy-aqgc/MG5_aMC_v2_9_9/bin/mg5_aMC sswwjj_S0_1e-07_1/mg_script_sswwjj_S0_1e-07.txt &
 # srun --exclusive -N 1 -n 1 ../WWW_aQGC/wwy-aqgc/MG5_aMC_v2_9_9/bin/mg5_aMC sswwjj_S0_1e-08_1/mg_script_sswwjj_S0_1e-08.txt &
@@ -46,13 +49,11 @@
 # srun --exclusive -N 1 -n 1 ../WWW_aQGC/wwy-aqgc/MG5_aMC_v2_9_9/bin/mg5_aMC sswwjj_S0_8e-11_1/mg_script_sswwjj_S0_8e-11.txt &
 
 # srun --exclusive -N 1 -n 1 /home/twamorkar/MG5_aMC_v3_4_2/bin/mg5_aMC oswwjj_aQGC_S0_1/mg_script_oswwjj_S0_SM_Ltotal_Ind5v2020v2_UFO.txt &
-srun --exclusive -N 1 -n 1 /home/twamorkar/MG5_aMC_v3_4_2/bin/mg5_aMC wzjj_aQGC_S0_1/mg_script_wzjj_S0_SM_Ltotal_Ind5v2020v2_UFO.txt &
-srun --exclusive -N 1 -n 1 /home/twamorkar/MG5_aMC_v3_4_2/bin/mg5_aMC zzjj_aQGC_S0_1/mg_script_zzjj_S0_SM_Ltotal_Ind5v2020v2_UFO.txt &
-
+# srun --exclusive -N 1 -n 1 /home/twamorkar/MG5_aMC_v3_4_2/bin/mg5_aMC wzjj_aQGC_S0_1/mg_script_wzjj_S0_SM_Ltotal_Ind5v2020v2_UFO.txt &
 # srun --exclusive -N 1 -n 1 /home/twamorkar/MG5_aMC_v3_4_2/bin/mg5_aMC www_aQGC_S0_1/mg_script_www_S0_SM_Ltotal_Ind5v2020v2_UFO.txt &
 # srun --exclusive -N 1 -n 1 /home/twamorkar/MG5_aMC_v3_4_2/bin/mg5_aMC wwz_aQGC_S0_1/mg_script_wwz_S0_SM_Ltotal_Ind5v2020v2_UFO.txt &
 # srun --exclusive -N 1 -n 1 /home/twamorkar/MG5_aMC_v3_4_2/bin/mg5_aMC wzz_aQGC_S0_1/mg_script_wzz_S0_SM_Ltotal_Ind5v2020v2_UFO.txt &
-# srun --exclusive -N 1 -n 1 /home/twamorkar/MG5_aMC_v3_4_2/bin/mg5_aMC zzz_aQGC_S0_1/mg_script_zzz_S0_SM_Ltotal_Ind5v2020v2_UFO.txt &
+# srun --exclusive -N 1 -n 1 /home/twamorkar/MG5_aMC_v3_4_2/bin/mg5_aMC zzz_aQGC_S0_1/mg_script_zzz_S0_SM_Ltotal_Ind5v2020v2_UFO.txt $SLURM_ARRAY_TASK_ID &
 
 
 
